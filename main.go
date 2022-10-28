@@ -59,37 +59,56 @@ Implement consumables which give you an attribute boost (strength, agility, inte
 
 func main() {
 	fmt.Println("Welcome to a game of Gopher RPG")
+	r := bufio.NewReader(os.Stdin)
+	chooseAction(r)
 }
 
-func chooseAction() {
-	r := bufio.NewReader(os.Stdin)
+func chooseAction(r *bufio.Reader) {
 	action := ""
 	for action != "exit" {
 		line, err := r.ReadString('\n')
 		if err != nil {
 			panic(err)
 		}
-		actionSli := strings.Split(strings.TrimSpace(line), " ")
+		actionSli := strings.Split(strings.ToLower(strings.TrimSpace(line)), " ")
 		action = actionSli[0]
 		args := actionSli[1:]
 		switch action {
 		case "attack":
-			break
-		case "work":
+			attack()
 			break
 		case "buy":
+			buy(args[0])
+			break
+		case "work":
+			work()
 			break
 		case "train":
+			train(args[0])
 			break
 		case "exit":
 			break
+		default:
+			fmt.Println("Invalid command !")
+			fmt.Println("Options are: Attack, Buy {item}, Work, Train {stat}, Exit")
 		}
 	}
 	fmt.Println("Exiting ... ")
 }
-func work() int {
+func attack() {
+	//TODO: Implement
+	fmt.Println("Attacking")
+}
+func buy(item string) {
+	//TODO: Implement
+	fmt.Println("Buying:", item)
+}
+func work() {
 	rand.Seed(time.Now().UnixNano())
 	goldEarned := rand.Intn((15-5)+1) + 5 // (range + 1) + minimum value
-	fmt.Println(goldEarned)
-	return goldEarned
+	fmt.Printf("Earned %d gold this turn !\n", goldEarned)
+}
+func train(skill string) {
+	//TODO: Implement
+	fmt.Println("Training:", skill)
 }
