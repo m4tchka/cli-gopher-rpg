@@ -1,5 +1,14 @@
 package main
 
+import (
+	"bufio"
+	"fmt"
+	"math/rand"
+	"os"
+	"strings"
+	"time"
+)
+
 /* The game is a turn-based one. There are two gophers and they can each decide what to do on their turn. Each gopher starts with 30 hitpoints, 20 gold and all their attributes are 0.
 
 The possible actions are:
@@ -49,5 +58,38 @@ Implement consumables which give you an attribute boost (strength, agility, inte
 */
 
 func main() {
+	fmt.Println("Welcome to a game of Gopher RPG")
+}
 
+func chooseAction() {
+	r := bufio.NewReader(os.Stdin)
+	action := ""
+	for action != "exit" {
+		line, err := r.ReadString('\n')
+		if err != nil {
+			panic(err)
+		}
+		actionSli := strings.Split(strings.TrimSpace(line), " ")
+		action = actionSli[0]
+		args := actionSli[1:]
+		switch action {
+		case "attack":
+			break
+		case "work":
+			break
+		case "buy":
+			break
+		case "train":
+			break
+		case "exit":
+			break
+		}
+	}
+	fmt.Println("Exiting ... ")
+}
+func work() int {
+	rand.Seed(time.Now().UnixNano())
+	goldEarned := rand.Intn((15-5)+1) + 5 // (range + 1) + minimum value
+	fmt.Println(goldEarned)
+	return goldEarned
 }

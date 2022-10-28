@@ -33,7 +33,7 @@ type Gopher struct {
 	coins     int
 }
 type Weapon struct {
-	damage          [2]int
+	damage          []int
 	price           int
 	strengthReq     int
 	agilityReq      int
