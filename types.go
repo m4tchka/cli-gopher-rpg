@@ -25,6 +25,7 @@ Consumable should contain the following data:
 hitpointsEffect - an integer, the effect on hitpoints
 */
 type Gopher struct {
+	name      string
 	hitpoints int
 	weapon    Weapon
 	strength  int

@@ -25,8 +25,16 @@ Extra challenges:
 Implement a game log which prints all events which occur throughout the game (see examples below)
 Implement consumables which give you an attribute boost (strength, agility, intellect) for a limited duration (e.g. 3 turns). This allows you to buy and use items without having the proper training yet but only for a limited duration
 */
-var gopher1 = &Gopher{
+var Gopher1 = &Gopher{
+	name:      "g1",
 	hitpoints: 30,
+	weapon:    Weapons["bare-handed"],
+	coins:     20,
+}
+var Gopher2 = &Gopher{
+	name:      "g2",
+	hitpoints: 30,
+	weapon:    Weapons["bare-handed"],
 	coins:     20,
 }
 
@@ -38,7 +46,17 @@ func main() {
 
 func handleAction(r *bufio.Reader) {
 	action := ""
+	turn := 0
 	for action != "exit" {
+		var currentGopher, otherGopher *Gopher
+		if turn%2 == 0 {
+			currentGopher = Gopher1
+			otherGopher = Gopher2
+		} else {
+			currentGopher = Gopher2
+			otherGopher = Gopher1
+		}
+		fmt.Printf("%s's turn\n", currentGopher.name)
 		line, err := r.ReadString('\n')
 		if err != nil {
 			panic(err)
@@ -48,16 +66,16 @@ func handleAction(r *bufio.Reader) {
 		args := actionSli[1:]
 		switch action {
 		case "attack":
-			attack()
+			attack(currentGopher, otherGopher)
 			break
 		case "buy":
-			buy(args[0])
+			buy(args[0], currentGopher)
 			break
 		case "work":
-			work()
+			work(currentGopher)
 			break
 		case "train":
-			train(args[0])
+			train(args[0], currentGopher)
 			break
 		case "exit":
 			break
@@ -68,20 +86,20 @@ func handleAction(r *bufio.Reader) {
 	}
 	fmt.Println("Exiting ... ")
 }
-func attack() {
+func attack(attacker *Gopher, defender *Gopher) {
 	//TODO: Implement
 	fmt.Println("Attacking")
 }
-func buy(item string) {
+func buy(item string, gopher *Gopher) {
 	//TODO: Implement
 	fmt.Println("Buying:", item)
 }
-func work() {
+func work(gopher *Gopher) {
 	rand.Seed(time.Now().UnixNano())
 	goldEarned := rand.Intn((15-5)+1) + 5 // (range + 1) + minimum value
 	fmt.Printf("Earned %d gold this turn !\n", goldEarned)
 }
-func train(skill string) {
+func train(skill string, gopher *Gopher) {
 	//TODO: Implement
 	fmt.Println("Training:", skill)
 }
