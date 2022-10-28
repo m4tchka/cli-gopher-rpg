@@ -1,2 +1,6 @@
 # cli-gopher-rpg
-Final excercise 6-08 from the repository "learn-programming-with-go-excercises" (separate because I think it's enough to warrant it's own repo)
+The final excercise 6-08 from the repository "learn-programming-with-go-excercises" 
+
+The task is to create a turn based CLI RPG where the player may take some actions with the goal of defeating the opponent. 
+
+## Usage: 
