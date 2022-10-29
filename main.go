@@ -89,16 +89,19 @@ func handleAction(r *bufio.Reader) {
 }
 func attack(attacker *Gopher, defender *Gopher) {
 
-	fmt.Printf("\n%v is attacking %v with %v", attacker, defender, attacker.weapon)
+	fmt.Printf("\n%s is attacking %s with %v", attacker.name, defender.name, attacker.weapon)
 }
 func buy(item string, gopher *Gopher) {
 	//TODO: Implement
 	fmt.Println("Buying:", item)
 }
 func work(gopher *Gopher) {
+	fmt.Println(gopher.coins)
 	rand.Seed(time.Now().UnixNano())
 	goldEarned := rand.Intn((15-5)+1) + 5 // (range + 1) + minimum value
 	fmt.Printf("Earned %d gold this turn !\n", goldEarned)
+	gopher.coins += goldEarned
+	fmt.Println(gopher.coins)
 }
 func train(skill string, gopher *Gopher) {
 	//TODO: Implement
