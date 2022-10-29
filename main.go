@@ -26,13 +26,13 @@ Implement a game log which prints all events which occur throughout the game (se
 Implement consumables which give you an attribute boost (strength, agility, intellect) for a limited duration (e.g. 3 turns). This allows you to buy and use items without having the proper training yet but only for a limited duration
 */
 var Gopher1 = &Gopher{
-	name:      "g1",
+	name:      "gopher1",
 	hitpoints: 30,
 	weapon:    Weapons["bare-handed"],
 	coins:     20,
 }
 var Gopher2 = &Gopher{
-	name:      "g2",
+	name:      "gopher2",
 	hitpoints: 30,
 	weapon:    Weapons["bare-handed"],
 	coins:     20,
@@ -83,6 +83,7 @@ func handleAction(r *bufio.Reader) {
 			fmt.Println("Invalid command !")
 			fmt.Println("Options are: Attack, Buy {item}, Work, Train {stat}, Exit")
 		}
+		turn++
 	}
 	fmt.Println("Exiting ... ")
 }
