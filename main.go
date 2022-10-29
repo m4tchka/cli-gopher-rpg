@@ -57,7 +57,7 @@ func handleAction(r *bufio.Reader) {
 			currentGopher = Gopher2
 			otherGopher = Gopher1
 		}
-		fmt.Printf("%s's turn\n", currentGopher.name)
+		fmt.Printf("\n%s's turn\n", currentGopher.name)
 		line, err := r.ReadString('\n')
 		if err != nil {
 			panic(err)
@@ -68,15 +68,19 @@ func handleAction(r *bufio.Reader) {
 		switch action {
 		case "attack":
 			attack(currentGopher, otherGopher)
+			turn++
 			break
 		case "buy":
 			buy(args[0], currentGopher)
+			turn++
 			break
 		case "work":
 			work(currentGopher)
+			turn++
 			break
 		case "train":
 			train(args[0], currentGopher)
+			turn++
 			break
 		case "exit":
 			break
@@ -84,16 +88,15 @@ func handleAction(r *bufio.Reader) {
 			fmt.Println("Invalid command !")
 			fmt.Println("Options are: Attack, Buy {item}, Work, Train {stat}, Exit")
 		}
-		turn++
 	}
 	fmt.Println("Exiting ... ")
 }
 func attack(attacker *Gopher, defender *Gopher) {
 	dmgRange := attacker.weapon.damage
 	dmgRoll := rand.Intn((dmgRange[1]-dmgRange[0])+1) + dmgRange[0]
-	fmt.Printf("%s is attacks %s for %d damage!\n", attacker.name, defender.name, dmgRoll)
 	defender.hitpoints -= dmgRoll
-	fmt.Println(defender.hitpoints)
+	fmt.Printf("%s attacks %s for %d damage!\n", attacker.name, defender.name, dmgRoll)
+	fmt.Printf("%s has %d hitpoints remaining\n", defender.name, defender.hitpoints)
 }
 func buy(item string, gopher *Gopher) {
 	//TODO: Implement
