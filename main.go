@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"math/rand"
 	"os"
@@ -67,20 +68,16 @@ func handleAction(r *bufio.Reader) {
 		args := actionSli[1:]
 		switch action {
 		case "attack":
-			attack(currentGopher, otherGopher)
-			turn++
+			err = attack(currentGopher, otherGopher)
 			break
 		case "buy":
-			buy(args[0], currentGopher)
-			turn++
+			err = buy(args[0], currentGopher)
 			break
 		case "work":
-			work(currentGopher)
-			turn++
+			err = work(currentGopher)
 			break
 		case "train":
-			train(args[0], currentGopher)
-			turn++
+			err = train(args[0], currentGopher)
 			break
 		case "exit":
 			break
@@ -88,26 +85,48 @@ func handleAction(r *bufio.Reader) {
 			fmt.Println("Invalid command !")
 			fmt.Println("Options are: Attack, Buy {item}, Work, Train {stat}, Exit")
 		}
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			turn++
+		}
 	}
 	fmt.Println("Exiting ... ")
 }
-func attack(attacker *Gopher, defender *Gopher) {
+func attack(attacker *Gopher, defender *Gopher) error {
+	// return errors.New("Something went wrong")
 	dmgRange := attacker.weapon.damage
 	dmgRoll := rand.Intn((dmgRange[1]-dmgRange[0])+1) + dmgRange[0]
 	defender.hitpoints -= dmgRoll
 	fmt.Printf("%s attacks %s for %d damage!\n", attacker.name, defender.name, dmgRoll)
 	fmt.Printf("%s has %d hitpoints remaining\n", defender.name, defender.hitpoints)
+	return nil
 }
-func buy(item string, gopher *Gopher) {
+func buy(item string, gopher *Gopher) error {
 	//TODO: Implement
 	fmt.Println("Buying:", item)
+	return nil
 }
-func work(gopher *Gopher) {
+func work(gopher *Gopher) error {
 	goldEarned := rand.Intn((15-5)+1) + 5 // (range + 1) + minimum value
 	fmt.Printf("Earned %d gold this turn !\n", goldEarned)
 	gopher.coins += goldEarned
+	return nil
 }
-func train(skill string, gopher *Gopher) {
-	//TODO: Implement
-	fmt.Println("Training:", skill)
+func train(skill string, gopher *Gopher) error {
+	if gopher.coins < 5 { // Check for enough gold to train
+		return fmt.Errorf("Insuffient gold for training. You have %d but you need 5", gopher.coins)
+	}
+	switch skill {
+	case "strength":
+		gopher.strength += 2
+	case "agility":
+		gopher.agility += 2
+	case "intellect":
+		gopher.intellect += 2
+	default:
+		return errors.New("Invalid attribute chosen") // Check if skill is valid
+	}
+	gopher.coins -= 5
+	return nil
 }
