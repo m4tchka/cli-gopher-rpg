@@ -39,6 +39,7 @@ var Gopher2 = &Gopher{
 }
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
 	fmt.Println("Welcome to a game of Gopher RPG")
 	r := bufio.NewReader(os.Stdin)
 	handleAction(r)
@@ -88,20 +89,20 @@ func handleAction(r *bufio.Reader) {
 	fmt.Println("Exiting ... ")
 }
 func attack(attacker *Gopher, defender *Gopher) {
-
-	fmt.Printf("\n%s is attacking %s with %v", attacker.name, defender.name, attacker.weapon)
+	dmgRange := attacker.weapon.damage
+	dmgRoll := rand.Intn((dmgRange[1]-dmgRange[0])+1) + dmgRange[0]
+	fmt.Printf("%s is attacks %s for %d damage!\n", attacker.name, defender.name, dmgRoll)
+	defender.hitpoints -= dmgRoll
+	fmt.Println(defender.hitpoints)
 }
 func buy(item string, gopher *Gopher) {
 	//TODO: Implement
 	fmt.Println("Buying:", item)
 }
 func work(gopher *Gopher) {
-	fmt.Println(gopher.coins)
-	rand.Seed(time.Now().UnixNano())
 	goldEarned := rand.Intn((15-5)+1) + 5 // (range + 1) + minimum value
 	fmt.Printf("Earned %d gold this turn !\n", goldEarned)
 	gopher.coins += goldEarned
-	fmt.Println(gopher.coins)
 }
 func train(skill string, gopher *Gopher) {
 	//TODO: Implement
