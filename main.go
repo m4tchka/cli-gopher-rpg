@@ -88,8 +88,8 @@ func handleAction(r *bufio.Reader) {
 	fmt.Println("Exiting ... ")
 }
 func attack(attacker *Gopher, defender *Gopher) {
-	//TODO: Implement
-	fmt.Println("Attacking")
+
+	fmt.Printf("\n%v is attacking %v with %v", attacker, defender, attacker.weapon)
 }
 func buy(item string, gopher *Gopher) {
 	//TODO: Implement
