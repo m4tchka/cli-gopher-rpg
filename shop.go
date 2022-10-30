@@ -42,7 +42,7 @@ damage - [4-4]
 intellectReq - 5
 */
 var Weapons = map[string]Weapon{
-	"bare-handed":               {damage: []int{1, 1}},
+	"bare-hands":                {damage: []int{1, 1}},
 	"knife":                     {damage: []int{2, 3}, price: 10},
 	"sword":                     {damage: []int{3, 5}, price: 35, strengthReq: 2},
 	"ninjaku":                   {damage: []int{1, 7}, price: 25, agilityReq: 2},
