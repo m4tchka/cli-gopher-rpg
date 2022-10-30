@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"math"
 	"math/rand"
 	"os"
 	"strings"
@@ -85,7 +86,7 @@ func handleAction(r *bufio.Reader) {
 			break
 		default:
 			err = errors.New("Invalid command")
-			fmt.Println("Options are: Attack, Buy {item}, Work, Train {stat}, Exit")
+			fmt.Println("Options are: Attack, Buy item {item}, Buy Weapon {weapon}, Work, Train {stat}, Exit")
 		}
 		if err != nil {
 			fmt.Println(err)
@@ -116,7 +117,7 @@ func buyItem(consumableName string, gopher *Gopher) error {
 	if gopher.coins < consumable.price {
 		return fmt.Errorf("%s has %d coins, but %s costs %d coins!", gopher.name, gopher.coins, consumableName, consumable.price)
 	}
-	gopher.hitpoints += consumable.hitpointsEffect
+	gopher.hitpoints = int(math.Min(30, float64(gopher.hitpoints+consumable.hitpointsEffect)))
 	gopher.coins -= consumable.price
 	return nil
 }
