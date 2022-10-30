@@ -9,7 +9,15 @@ medium_health_potion - consumable - 9 gold
 hitpointsEffect - 10
 big_health_potion - consumable - 18 gold
 hitpointsEffect - 20
+*/
 
+var Consumables = map[string]Consumable{
+	"small_health_potion":  {hitpointsEffect: 5, price: 5},
+	"medium_health_potion": {hitpointsEffect: 10, price: 9},
+	"large_health_potion":  {hitpointsEffect: 20, price: 18},
+}
+
+/*
 Weapons:
 knife - weapon - 10 gold
 damage - [2-3]

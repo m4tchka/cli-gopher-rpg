@@ -27,7 +27,7 @@ hitpointsEffect - an integer, the effect on hitpoints
 type Gopher struct {
 	name      string
 	hitpoints int
-	weapon    Weapon
+	weapon    string
 	strength  int
 	agility   int
 	intellect int
@@ -42,4 +42,5 @@ type Weapon struct {
 }
 type Consumable struct {
 	hitpointsEffect int
+	price           int
 }

@@ -29,13 +29,13 @@ Implement consumables which give you an attribute boost (strength, agility, inte
 var Gopher1 = &Gopher{
 	name:      "gopher1",
 	hitpoints: 30,
-	weapon:    Weapons["bare-handed"],
+	weapon:    "bare-handed",
 	coins:     20,
 }
 var Gopher2 = &Gopher{
 	name:      "gopher2",
 	hitpoints: 30,
-	weapon:    Weapons["bare-handed"],
+	weapon:    "bare-handed",
 	coins:     20,
 }
 
@@ -97,32 +97,42 @@ func handleAction(r *bufio.Reader) {
 	fmt.Println("Exiting ... ")
 }
 func attack(attacker *Gopher, defender *Gopher) error {
-	dmgRange := attacker.weapon.damage
+	_, ok := Weapons[attacker.weapon]
+	if !ok {
+		panic("Invalid state: Attacker's weapon does not exist")
+	} // Check that attacker's weapon exists in the map
+	dmgRange := Weapons[attacker.weapon].damage
 	dmgRoll := randomClosedInt(dmgRange[0], dmgRange[1])
 	defender.hitpoints -= dmgRoll
 	fmt.Printf("%s attacks %s for %d damage!\n", attacker.name, defender.name, dmgRoll)
 	fmt.Printf("%s has %d hitpoints remaining\n", defender.name, defender.hitpoints)
 	return nil
 }
-func buyItem(item string, gopher *Gopher) error {
-	fmt.Println("Buying item:", item)
+func buyItem(consumableName string, gopher *Gopher) error {
+	consumable, ok := Consumables[consumableName]
+	if !ok {
+		return fmt.Errorf("%s is not a valid consumable !", consumableName)
+	}
+	if gopher.coins < consumable.price {
+		return fmt.Errorf("%s has %d coins, but %s costs %d coins!", gopher.name, gopher.coins, consumableName, consumable.price)
+	}
+	gopher.hitpoints += consumable.hitpointsEffect
+	gopher.coins -= consumable.price
 	return nil
 }
-func buyWeapon(item string, gopher *Gopher) error {
-	// fmt.Println("Buying weapon:", weapon)
-	weapon, ok := Weapons[item]
+func buyWeapon(weaponName string, gopher *Gopher) error {
+	weapon, ok := Weapons[weaponName]
 	if !ok {
-		return fmt.Errorf("%s is not a valid weapon !", item)
+		return fmt.Errorf("%s is not a valid weapon !", weaponName)
 	} // Check weapon is a vaild selection
 	if gopher.coins < weapon.price {
-		return fmt.Errorf("%s has %d but %s costs %d!", gopher.name, gopher.coins, item, weapon.price)
+		return fmt.Errorf("%s has %d  coins, but %s costs %d coins!", gopher.name, gopher.coins, weaponName, weapon.price)
 	} // Check gopher has enough to buy chosen weapon
 	if gopher.strength < weapon.strengthReq || gopher.agility < weapon.agilityReq || gopher.intellect < weapon.intelligenceReq {
-		return fmt.Errorf("%s has:	%d STR | %d AGI | %d INT\n%s requires: %d STR | %d AGI | %d INT", gopher.name, gopher.strength, gopher.agility, gopher.intellect, item, weapon.strengthReq, weapon.agilityReq, weapon.intelligenceReq)
+		return fmt.Errorf("%s has:	%d STR | %d AGI | %d INT\n%s requires: %d STR | %d AGI | %d INT", gopher.name, gopher.strength, gopher.agility, gopher.intellect, weaponName, weapon.strengthReq, weapon.agilityReq, weapon.intelligenceReq)
 	} // Check gopher meets attribute requirements to use chosen weapon
-	gopher.weapon = weapon
+	gopher.weapon = weaponName
 	gopher.coins -= weapon.price
-
 	return nil
 }
 func work(gopher *Gopher) error {
