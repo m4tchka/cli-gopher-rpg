@@ -69,47 +69,65 @@ func handleAction(r *bufio.Reader) {
 		switch action {
 		case "attack":
 			err = attack(currentGopher, otherGopher)
-			break
 		case "buy":
-			err = buy(args[0], currentGopher)
-			break
+			if args[0] == "item" {
+				err = buyItem(args[1], currentGopher)
+			} else if args[0] == "weapon" {
+				err = buyWeapon(args[1], currentGopher)
+			} else {
+				err = errors.New("Invalid command")
+			}
 		case "work":
 			err = work(currentGopher)
-			break
 		case "train":
 			err = train(args[0], currentGopher)
-			break
 		case "exit":
 			break
 		default:
-			fmt.Println("Invalid command !")
+			err = errors.New("Invalid command")
 			fmt.Println("Options are: Attack, Buy {item}, Work, Train {stat}, Exit")
 		}
 		if err != nil {
 			fmt.Println(err)
 		} else {
+			printStats(currentGopher)
 			turn++
 		}
 	}
 	fmt.Println("Exiting ... ")
 }
 func attack(attacker *Gopher, defender *Gopher) error {
-	// return errors.New("Something went wrong")
 	dmgRange := attacker.weapon.damage
-	dmgRoll := rand.Intn((dmgRange[1]-dmgRange[0])+1) + dmgRange[0]
+	dmgRoll := randomClosedInt(dmgRange[0], dmgRange[1])
 	defender.hitpoints -= dmgRoll
 	fmt.Printf("%s attacks %s for %d damage!\n", attacker.name, defender.name, dmgRoll)
 	fmt.Printf("%s has %d hitpoints remaining\n", defender.name, defender.hitpoints)
 	return nil
 }
-func buy(item string, gopher *Gopher) error {
-	//TODO: Implement
-	fmt.Println("Buying:", item)
+func buyItem(item string, gopher *Gopher) error {
+	fmt.Println("Buying item:", item)
+	return nil
+}
+func buyWeapon(item string, gopher *Gopher) error {
+	// fmt.Println("Buying weapon:", weapon)
+	weapon, ok := Weapons[item]
+	if !ok {
+		return fmt.Errorf("%s is not a valid weapon !", item)
+	} // Check weapon is a vaild selection
+	if gopher.coins < weapon.price {
+		return fmt.Errorf("%s has %d but %s costs %d!", gopher.name, gopher.coins, item, weapon.price)
+	} // Check gopher has enough to buy chosen weapon
+	if gopher.strength < weapon.strengthReq || gopher.agility < weapon.agilityReq || gopher.intellect < weapon.intelligenceReq {
+		return fmt.Errorf("%s has:	%d STR | %d AGI | %d INT\n%s requires: %d STR | %d AGI | %d INT", gopher.name, gopher.strength, gopher.agility, gopher.intellect, item, weapon.strengthReq, weapon.agilityReq, weapon.intelligenceReq)
+	} // Check gopher meets attribute requirements to use chosen weapon
+	gopher.weapon = weapon
+	gopher.coins -= weapon.price
+
 	return nil
 }
 func work(gopher *Gopher) error {
-	goldEarned := rand.Intn((15-5)+1) + 5 // (range + 1) + minimum value
-	fmt.Printf("Earned %d gold this turn !\n", goldEarned)
+	goldEarned := randomClosedInt(5, 15)
+	fmt.Printf("%s earned %d gold this turn !\n", gopher.name, goldEarned)
 	gopher.coins += goldEarned
 	return nil
 }
@@ -128,5 +146,19 @@ func train(skill string, gopher *Gopher) error {
 		return errors.New("Invalid attribute chosen") // Check if skill is valid
 	}
 	gopher.coins -= 5
+	fmt.Printf("%s spent 5 gold to train %s!\n", gopher.name, skill)
 	return nil
+}
+func printStats(g *Gopher) {
+	fmt.Printf("The current Gopher is %s\n", g.name)
+	fmt.Printf("Gopher1: HP: %d, STR: %d, AGI: %d, INT: %d, Gold: %d\n", Gopher1.hitpoints, Gopher1.strength, Gopher1.agility, Gopher1.intellect, Gopher1.coins)
+	fmt.Printf("Gopher2: HP: %d, STR: %d, AGI: %d, INT: %d, Gold: %d\n", Gopher2.hitpoints, Gopher2.strength, Gopher2.agility, Gopher2.intellect, Gopher2.coins)
+}
+func randomClosedInt(start, end int) int {
+	rge := end - start
+	fmt.Println("Rge: ", rge)
+	roll := rand.Intn(rge + 1)
+	fmt.Println("Roll: ", roll)
+	adjRoll := roll + start
+	return adjRoll
 }
