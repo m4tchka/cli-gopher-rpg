@@ -27,30 +27,36 @@ Extra challenges:
 Implement a game log which prints all events which occur throughout the game (see examples below)
 Implement consumables which give you an attribute boost (strength, agility, intellect) for a limited duration (e.g. 3 turns). This allows you to buy and use items without having the proper training yet but only for a limited duration
 */
-var Gopher1 = &Gopher{
+var Gopher1 = &Gopher{ // 2 static variables that point to a Gopher struct. Defines initial game state.
 	name:      "gopher1",
-	hitpoints: 30,
+	hitpoints: 5,
 	weapon:    "bare-hands",
 	coins:     20,
 }
 var Gopher2 = &Gopher{
 	name:      "gopher2",
-	hitpoints: 30,
+	hitpoints: 5,
 	weapon:    "bare-hands",
 	coins:     20,
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano()) // Changes the seed of the rand library
 	fmt.Println("Welcome to a game of Gopher RPG")
 	r := bufio.NewReader(os.Stdin)
 	handleAction(r)
+	if Gopher1.hitpoints <= 0 || Gopher2.hitpoints <= 0 {
+		winner := getWinner()
+		fmt.Printf("Game over! %s is the winner!\n", winner)
+	} else {
+		fmt.Println("Exiting ... ")
+	}
 }
 
 func handleAction(r *bufio.Reader) { // Function to handle user input and call corresponding functions.
 	action := ""
 	turn := 0
-	for action != "exit" { // When user inputs "exit" exit the game, otherwise continue accepting input
+	for action != "exit" && (Gopher1.hitpoints > 0 && Gopher2.hitpoints > 0) { // When user inputs "exit" exit the game, otherwise continue accepting input
 		var currentGopher, otherGopher *Gopher
 		if turn%2 == 0 { // Alternate turns between the 2 gophers
 			currentGopher = Gopher1
@@ -84,6 +90,7 @@ func handleAction(r *bufio.Reader) { // Function to handle user input and call c
 		case "train":
 			err = train(args[0], currentGopher)
 		case "exit":
+			// fmt.Println("Exiting ... ")
 			break
 		default: // If the first word of the user input was not one of the above, print the following.
 			//Since the error was now defined, the turn is not incremented.
@@ -97,7 +104,6 @@ func handleAction(r *bufio.Reader) { // Function to handle user input and call c
 			turn++                    // Increment the turn counter
 		}
 	}
-	fmt.Println("Exiting ... ")
 }
 func attack(attacker *Gopher, defender *Gopher) error { // Function for gopher to attack it's opponent, with damage based on currently equipped weapon
 	_, ok := Weapons[attacker.weapon]
@@ -173,4 +179,12 @@ func randomClosedInt(start, end int) int { // Function to return a random interg
 	roll := rand.Intn(rge + 1) // Roll a random number between 0 and the end of the range + 1 to account for rand.Intn being half-open
 	adjRoll := roll + start    // Offset the number by the specified start number
 	return adjRoll
+}
+func getWinner() string {
+	if Gopher2.hitpoints <= 0 {
+		return Gopher1.name
+	} else if Gopher1.hitpoints <= 0 {
+		return Gopher2.name
+	}
+	panic("Invalid state: getWinner triggered without a winner")
 }
