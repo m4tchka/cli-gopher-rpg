@@ -10,3 +10,6 @@ Simply type the action (attack/buy/work/train) you wish to take on that turn.
 + Work earns the player between 5 - 15 gold
 + Train increases the chosen attribute by 1 (allowing them meet min requirements for equipping more advanced weapons)
 + Exit exits the game.                        
+
+## Demo:
+![Demo GIF](./gopherrpgCLI.gif)

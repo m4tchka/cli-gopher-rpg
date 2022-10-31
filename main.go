@@ -29,13 +29,13 @@ Implement consumables which give you an attribute boost (strength, agility, inte
 */
 var Gopher1 = &Gopher{ // 2 static variables that point to a Gopher struct. Defines initial game state.
 	name:      "gopher1",
-	hitpoints: 5,
+	hitpoints: 30,
 	weapon:    "bare-hands",
 	coins:     20,
 }
 var Gopher2 = &Gopher{
 	name:      "gopher2",
-	hitpoints: 5,
+	hitpoints: 30,
 	weapon:    "bare-hands",
 	coins:     20,
 }
